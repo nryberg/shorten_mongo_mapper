@@ -190,7 +190,7 @@ get '/:short' do
 	halt 404, "Page not found" unless url
 	
 	if url.image == true 
-	  erb :image, :locals => {:url => url.url}
+	  erb :image, :locals => {:url => url}
 	else
 	  redirect url.url
 	end
