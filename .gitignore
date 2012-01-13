@@ -7,3 +7,6 @@ sinatra.log
 keys.yaml
 tmp
 tmp/*
+logs/*
+*~
+#*
