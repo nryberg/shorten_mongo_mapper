@@ -44,7 +44,7 @@ helpers do
 		
 		begin
 			uri = URI.parse(URI.escape(url))
-			if uri.class != URI::HTTP
+			if uri.class != URI::HTTP and uri.class != URI::HTTPS
 				retval = false
 			end
 			
