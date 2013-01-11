@@ -3,20 +3,21 @@ require 'sinatra'
 require 'sequel'
 require 'uri'
 require 'yaml'
-
+require 'awesome_print'
 
 
 
 configure do
 	Sequel::Model.plugin(:schema)
 
-  keys = YAML.load(File.open("keys.yaml", "r").read)	
-	Sequel.connect(keys['database_url'] || 'sqlite://shorten.db')
+  #keys = YAML.load(File.open("keys.yaml", "r").read)	
+	#Sequel.connect(keys['database_url'] || 'sqlite://shorten.db')
+	Sequel.connect('sqlite://shorten.db')
 
 	require 'ostruct'
 	Shorten = OpenStruct.new(
-		:base_url => "http://amd.im/",
-		:service_name => "amd.im",
+		:base_url => "http://localhost:4567/",
+		:service_name => "shrt.en",
 		:button_text => "shorten",
 		:path_size => 4
 	)
@@ -94,9 +95,7 @@ end
 
 post '/' do
 	validate_link params[:url]
-
 	url = ShortenUrl.create_url(params[:url], params[:image])
-	
 	erb :finished, :locals => { :url => url, :type => "finished", :image => params[:image] }
 end
 
