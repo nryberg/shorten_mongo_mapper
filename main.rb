@@ -15,9 +15,9 @@ configure do
   MongoMapper.database.authenticate('shortened', 'Rwt6X9xWzsTFbNtJG')
 
 	require 'ostruct'
-	#	:base_url => "http://radiant-castle-2552.herokuapp.com/",
+	#	:base_url => "http://localhost:4567/",
 	Shorten = OpenStruct.new(
-		:base_url => "http://localhost:4567/",
+		:base_url => "http://radiant-castle-2552.herokuapp.com/",
 		:service_name => "shrt.en",
 		:button_text => "shorten",
 		:path_size => 4
