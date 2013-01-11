@@ -16,7 +16,7 @@ configure do
 
 	require 'ostruct'
 	Shorten = OpenStruct.new(
-		:base_url => "http://localhost:4567/",
+		:base_url => "http://radiant-castle-2552.herokuapp.com/",
 		:service_name => "shrt.en",
 		:button_text => "shorten",
 		:path_size => 4
