@@ -4,6 +4,6 @@ require 'sequel'
 require 'rack'
 require 'sinatra'
 
-require 'main'
+require './main'
 
 run Sinatra::Application
