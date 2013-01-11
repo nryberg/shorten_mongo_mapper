@@ -1,0 +1,3 @@
+---
+BUNDLE_PATH: mongo_mapper
+BUNDLE_DISABLE_SHARED_GEMS: '1'

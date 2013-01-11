@@ -1,21 +1,15 @@
 require 'anybase'
 
-class ShortenUrl < Sequel::Model
+class ShortenUrl 
   include MongoMapper::Document
 
-	plugin :validation_helpers
+	#plugin :validation_helpers
 
-  key :key,   String
-  key :url,   String
+  key :key,   String, :required => true, :unique => true
+  key :url,   String, :required => true
   key :image, Boolean
   key :time,  DateTime
 
-	def validate
-		super
-		validates_presence [:url, :key]
-		validates_unique :url
-		validates_unique :key
-	end
 			
 	def short_url
 		"#{Shorten.base_url}#{self.key.to_s}"

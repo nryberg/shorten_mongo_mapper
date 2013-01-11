@@ -9,14 +9,15 @@ require 'mongo_mapper'
 
 
 configure do
-mongodb://<user>:<password>@linus.mongohq.com:10031/shorten
+  #mongodb://<user>:<password>@linus.mongohq.com:10031/shorten
   MongoMapper.connection = Mongo::Connection.new('linus.mongohq.com', 10031)
-  MongoMapper.database.authenticate('shortened', 'Rwt6X9xWzsTFbNtJG')
   MongoMapper.database = 'shorten'
+  MongoMapper.database.authenticate('shortened', 'Rwt6X9xWzsTFbNtJG')
 
 	require 'ostruct'
+	#	:base_url => "http://radiant-castle-2552.herokuapp.com/",
 	Shorten = OpenStruct.new(
-		:base_url => "http://radiant-castle-2552.herokuapp.com/",
+		:base_url => "http://localhost:4567/",
 		:service_name => "shrt.en",
 		:button_text => "shorten",
 		:path_size => 4
@@ -184,7 +185,7 @@ end
 
 get '/:short' do
 
-	url = ShortenUrl.find(:key => params[:short])
+	url = ShortenUrl.first(:key => params[:short])
 	
 	halt 404, "Page not found" unless url
 	
