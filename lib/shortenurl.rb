@@ -1,18 +1,15 @@
 require 'anybase'
 
 class ShortenUrl < Sequel::Model
+  include MongoMapper::Document
+
 	plugin :validation_helpers
-	unless table_exists?
-		set_schema do
-			primary_key :id
-			String :key
-			String :url
-			Boolean :image
-			Time :time
-		end
-		create_table
-	end
-	
+
+  key :key,   String
+  key :url,   String
+  key :image, Boolean
+  key :time,  DateTime
+
 	def validate
 		super
 		validates_presence [:url, :key]

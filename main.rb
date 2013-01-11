@@ -1,18 +1,18 @@
 require 'rubygems'
 require 'sinatra'
-require 'sequel'
+#require 'sequel'
 require 'uri'
 require 'yaml'
+require 'mongo_mapper'
 #require 'awesome_print'
 
 
 
 configure do
-	Sequel::Model.plugin(:schema)
-
-  #keys = YAML.load(File.open("keys.yaml", "r").read)	
-	#Sequel.connect(keys['database_url'] || 'sqlite://shorten.db')
-	Sequel.connect('sqlite://shorten.db')
+mongodb://<user>:<password>@linus.mongohq.com:10031/shorten
+  MongoMapper.connection = Mongo::Connection.new('linus.mongohq.com', 10031)
+  MongoMapper.database.authenticate('shortened', 'Rwt6X9xWzsTFbNtJG')
+  MongoMapper.database = 'shorten'
 
 	require 'ostruct'
 	Shorten = OpenStruct.new(
