@@ -1,11 +1,8 @@
 require 'rubygems'
 require 'sinatra'
-#require 'sequel'
 require 'uri'
 require 'yaml'
 require 'mongo_mapper'
-#require 'awesome_print'
-
 
 
 configure do
@@ -100,85 +97,9 @@ post '/' do
 	erb :finished, :locals => { :url => url, :type => "finished", :image => params[:image] }
 end
 
-get '/upload' do 
-  
-  erb :upload
-  
-end
-
-post '/api-upload' do
-  require 'aws/s3'
-  
-  keys = YAML.load(File.open("keys.yaml", "r").read)
- 
-  # establish connection
-  AWS::S3::Base.establish_connection!(
-    :access_key_id => keys['s3_key'],
-    :secret_access_key => keys['s3_secret']
-  )
-  
-  # generate key and check uniqueness
-  key = Anybase::Base62.random(Shorten.path_size)
-	key_check = ShortenUrl.filter(:url => key).first
-	
-	while key_check
-		key = Anybase::Base62.random(Shorten.path_size)
-		key_check = ShortenUrl.filter(:url => key).first
-	end
-	
-	# merge key and extension
-  filename = key + ".jpg"
-  
-  # upload to S3
-  AWS::S3::S3Object.store(filename, open(params[:media][:tempfile]), keys["s3_bucket"], :access => :public_read)
-  object_url = AWS::S3::S3Object.url_for(filename, keys["s3_bucket"], :authenticated => false)
-  
-  # generate shorturl
-  url = ShortenUrl.new(:url => object_url, :key => key, :image => "true")
-  url.save
-  
-  "<mediaurl>" + url.short_url + "</mediaurl>"
-end
-
-post '/upload' do 
-  require 'aws/s3'
- 
-  keys = YAML.load(File.open("keys.yaml", "r").read)
- 
-  # establish connection
-  AWS::S3::Base.establish_connection!(
-    :access_key_id => keys['s3_key'],
-    :secret_access_key => keys['s3_secret']
-  )
-  
-  # generate key and check uniqueness
-  key = Anybase::Base62.random(Shorten.path_size)
-	key_check = ShortenUrl.filter(:url => key).first
-	
-	while key_check
-		key = Anybase::Base62.random(Shorten.path_size)
-		key_check = ShortenUrl.filter(:url => key).first
-	end
-	
-	# merge key and extension
-	ext = File.extname(params[:file][:filename])
-  filename = key + ext
-  #filename = params[:file][:filename]
-  
-  # upload to S3
-  AWS::S3::S3Object.store(filename, open(params[:file][:tempfile]), keys["s3_bucket"], :access => :public_read)
-  object_url = AWS::S3::S3Object.url_for(filename, keys["s3_bucket"], :authenticated => false)
-  
-  # generate shorturl
-  url = ShortenUrl.new(:url => object_url, :key => key, :image => params[:image])
-  url.save
-  #url = ShortenUrl.create_url(object_url, params[:image])
-  
-  erb :finished, :locals => { :url => url, :type => "finished", :image => params[:image] }
-end 
 
 get '/recent' do
-  urls = ShortenUrl.order(:id).reverse.limit(10)
+  urls = ShortenUrl.order(:created_at).reverse.limit(10)
   
   erb :recent, :locals => {:urls => urls}
 end
@@ -186,7 +107,10 @@ end
 get '/:short' do
 
 	url = ShortenUrl.first(:key => params[:short])
-	
+  unless url.nil?
+    url.increment_views
+    url.save
+  end
 	halt 404, "Page not found" unless url
 	
 	if url.image == true 

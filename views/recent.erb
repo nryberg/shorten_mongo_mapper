@@ -7,10 +7,7 @@
   <ul>
   <% for url in urls do %>
     <li>
-      <a href="<%=url.short_url%>"><%= url.short_url %></a> : <%= url.url %>
-      <% if url.image %>
-        (image)
-      <% end %>
+      <a href="<%=url.short_url%>"><%= url.short_url %></a> : <%= url.url %> : <%= url.views%>
     </li>
   <% end %>
   </ul>

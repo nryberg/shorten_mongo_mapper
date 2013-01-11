@@ -9,8 +9,13 @@ class ShortenUrl
   key :url,   String, :required => true
   key :image, Boolean
   key :time,  DateTime
+  key :views, Integer
+  timestamps!
 
-			
+  def increment_views
+    self.views += 1
+  end
+    
 	def short_url
 		"#{Shorten.base_url}#{self.key.to_s}"
 	end
@@ -30,7 +35,7 @@ class ShortenUrl
 				key_check = self.filter(:url => key).first
 			end
 	
-			url = self.new(:url => link, :key => key, :image => image)
+			url = self.new(:url => link, :key => key, :image => image, :views => 0)
 			url.save					
 		end
 		
